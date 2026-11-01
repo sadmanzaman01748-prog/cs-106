@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | Purrfect Cat Café</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Signup CSS -->
+    <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="signup-header">
+
+        <a href="index.html" class="back-home">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Home
+        </a>
+
+        <a href="index.html" class="signup-logo">
+            <i class="fa-solid fa-paw"></i>
+            <span>Purrfect Café</span>
+        </a>
+
+    </header>
+
+
+    <!-- Main Signup Section -->
+    <main class="signup-container">
+
+        <div class="signup-card">
+
+            <!-- Heading -->
+            <div class="signup-heading">
+
+                <div class="signup-small-logo">
+                    <i class="fa-solid fa-paw"></i>
+                    <span>Purrfect Cat Café</span>
+                </div>
+
+                <h1>Create Your Account</h1>
+
+                <p>
+                    Sign up in seconds to start reserving visits
+                    and collecting paw stamps.
+                </p>
+
+            </div>
+
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+
+                <!-- Full Name -->
+                <div class="form-group full-width">
+
+                    <label for="fullName">Full Name</label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-user input-icon"></i>
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            placeholder="e.g. Jessica Miller"
+                            autocomplete="name"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Email and Phone -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="email">Email Address</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-regular fa-envelope input-icon"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="jessica@example.com"
+                                autocomplete="email"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="phone">Phone Number</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-phone input-icon"></i>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="+1 (555) 000-0000"
+                                autocomplete="tel"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password and Confirm Password -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="password">Password</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter password"
+                                autocomplete="new-password"
+                                minlength="8"
+                                required>
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                data-target="password"
+                                aria-label="Show password">
+
+                                <i class="fa-regular fa-eye-slash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">Confirm Password</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Confirm password"
+                                autocomplete="new-password"
+                                minlength="8"
+                                required>
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                data-target="confirmPassword"
+                                aria-label="Show password">
+
+                                <i class="fa-regular fa-eye-slash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Create Account Button -->
+                <button type="submit" class="signup-btn">
+
+                    Create Account
+
+                    <i class="fa-solid fa-paw"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- Login Link and Home Link -->
+            <div class="signup-bottom">
+
+                <p>
+                    Already have an account?
+                    <a href="login.html">Login here</a>
+                </p>
+
+                <a href="index.html" class="return-home">
+                    <i class="fa-solid fa-house"></i>
+                    Back to Home Page
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="signup-footer">
+
+        <p>
+            © 2024 Purrfect Cat Café.
+            Crafted with warm paws &amp; fresh brew.
+        </p>
+
+    </footer>
+
+
+    <!-- JavaScript -->
+    <script>
+
+        // SHOW / HIDE PASSWORD
+
+        const passwordButtons = document.querySelectorAll(".password-toggle");
+
+        passwordButtons.forEach(function(button) {
+
+            button.addEventListener("click", function() {
+
+                const targetId = button.getAttribute("data-target");
+
+                const passwordInput = document.getElementById(targetId);
+
+                const icon = button.querySelector("i");
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+
+                    button.setAttribute("aria-label", "Hide password");
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+
+                    button.setAttribute("aria-label", "Show password");
+
+                }
+
+            });
+
+        });
+
+
+        // SIGNUP FORM VALIDATION
+
+        const signupForm = document.getElementById("signupForm");
+
+        signupForm.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const password = document.getElementById("password").value;
+
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+
+                alert("Passwords do not match. Please try again.");
+
+                return;
+
+            }
+
+            alert("Your form is valid! Connect the backend to create your account.");
+
+        });
+
+    </script>
+
+</body>
+</html>

@@ -4,8 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+      <!-- Splide CSS -->
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+
+
 </head>
 <body>
     
+<header class="navbar">
+    
+        <a href="index.html" class="logo">
+        <i class="fa-solid fa-paw"></i>
+        <span>Purrfect Cat Cafe</span>
+    </a>
+
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="cats.html">Our Cats</a>
+    <a href="menu.html">Menu</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+   
+  <div class="nav-actions">
+
+    
+    <div class="search-box">
+        <input type="text" placeholder="Search...">
+
+        <button type="button" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+  </div>
+
+    <a href="booking.html" class="book-btn">
+      Book a Visit
+    </a>
+
+        <div class="account-dropdown">
+      <button class="account-btn" id="accountBtn"
+              aria-label="Account menu"
+              aria-expanded="false">
+        <i class="fa-solid fa-circle-user"></i>
+      </button>
+       <div class="dropdown-menu" id="accountMenu">
+        <a href="login.html">Login</a>
+        <a href="signup.html">Sign Up</a>
+      </div>
+    </div>
+
+
+</header>
+
+<!-- Hero Image Carousel -->
+<section class="splide" id="heroCarousel"
+         aria-label="Purrfect Cat Café slideshow">
+
+    <div class="splide__track">
+        <ul class="splide__list">
+
+            <!-- Slide 1 -->
+            <li class="splide__slide">
+                <img src="cat1.png"
+                     alt="Orange cat relaxing beside coffee in a cosy café">
+
+                <div class="hero-content">
+                    <h1>A Purrfect Place to Relax</h1>
+                    <p>Enjoy delicious treats, cosy moments and the company of our adorable cats.</p>
+                    <a href="booking.html">Book a Visit</a>
+                    <a href="cats.html">Meet Our Cats</a>
+                </div>
+            </li>
+
+            <!-- Slide 2 -->
+            <li class="splide__slide">
+                <img src="cat2.png"
+                     alt="Cute cat relaxing in a café">
+
+                <div class="hero-content">
+                    <h1>A Little Happiness in Every Visit</h1>
+                    <p>Take a break, enjoy a coffee and make some furry friends.</p>
+                    <a href="booking.html">Book a Visit</a>
+                    <a href="cats.html">Meet Our Cats</a>
+                </div>
+            </li>
+
+            <!-- Slide 3 -->
+            <li class="splide__slide">
+                <img src="cat3.png"
+                     alt="Cat enjoying a peaceful moment">
+
+                <div class="hero-content">
+                    <h1>Where Coffee Meets Cuddles</h1>
+                    <p>Discover your new favourite place to relax and spend time with cats.</p>
+                    <a href="booking.html">Book a Visit</a>
+                    <a href="cats.html">Meet Our Cats</a>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+
+    <!-- Play/Pause Button -->
+    <button class="splide__toggle" type="button"
+            aria-label="Pause automatic slideshow">
+
+        <span class="splide__toggle__play">
+            <i class="fa-solid fa-play"></i> Play
+        </span>
+
+        <span class="splide__toggle__pause">
+            <i class="fa-solid fa-pause"></i> Pause
+        </span>
+    </button>
+
+    <!-- Progress Bar -->
+    <div class="splide__progress">
+        <div class="splide__progress__bar"></div>
+    </div>
+
+</section>
+
+
+<!-- Splide JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+
+
+
+<script src="main.js"></script>
 </body>
 </html>
