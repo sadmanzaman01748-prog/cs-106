@@ -310,6 +310,20 @@
 
         });
 
+
+       async function blah(){
+            const { data, error } = await supabase.auth.signUp({
+  email:    'blah@blah.com',
+  password: 12345678,
+  options: {
+    data: {
+      username: 'johndoe',
+      age:      27,
+    },
+  },
+});
+        }
+
     </script>
 
 </body>
