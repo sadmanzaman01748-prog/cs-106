@@ -17,6 +17,8 @@
 
     <!-- Signup CSS -->
     <link rel="stylesheet" href="signup.css">
+
+    
 </head>
 
 <body>
@@ -210,6 +212,13 @@
 
 
     <!-- JavaScript -->
+
+<!-- Load Supabase first, then your teammate's helpers -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+
+
     <script>
 
         // SHOW / HIDE PASSWORD
@@ -251,33 +260,65 @@
         });
 
 
-        // SIGNUP FORM VALIDATION
+// SIGNUP FORM SUBMISSION
 
-        const signupForm = document.getElementById("signupForm");
+const signupForm = document.getElementById("signupForm");
 
-        signupForm.addEventListener("submit", function (event) {
+signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-            event.preventDefault();
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
 
-            const password = document.getElementById("password").value;
+    if (!fullName || !email || !phone) {
+        alert("Please fill in all required fields.");
+        return;
+    }
 
-            const confirmPassword = document.getElementById("confirmPassword").value;
+    if (password !== confirmPassword) {
+        alert("Passwords do not match. Please try again.");
+        return;
+    }
 
-            if (password !== confirmPassword) {
+    const submitButton = signupForm.querySelector(
+        'button[type="submit"]'
+    );
 
-                alert("Passwords do not match. Please try again.");
+    submitButton.disabled = true;
 
-                return;
+    try {
+        const result = await signUp(
+            email,
+            password,
+            fullName,
+            phone
+        );
 
-            }
-
-            alert("Your form is valid! Connect the backend to create your account.");
-
-        });
+        if (result.session) {
+            alert("Account created! You are now logged in.");
+            window.location.href = "index.html";
+        } else {
+            alert(
+                "Please check your email for a confirmation link. " +
+                "After confirming, you can log in."
+            );
+            window.location.href = "login.html";
+        }
+    } catch (error) {
+        alert(error.message || "Unable to sign up. Please try again.");
+    } finally {
+        submitButton.disabled = false;
+    }
+});
 
 
  
     </script>
+
 
 </body>
 

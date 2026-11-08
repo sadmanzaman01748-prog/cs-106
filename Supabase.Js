@@ -19,14 +19,21 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ---------- AUTH ----------
 
 // Create a new account (a profile row is made automatically)
-async function signUp(email, password, fullName) {
-  const { data, error } = await supabaseClient.auth.signUp({
-    email: email,
-    password: password,
-    options: { data: { full_name: fullName } }
-  });
-  if (error) throw error;
-  return data;
+async function signUp(email, password, fullName, phone) {
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+            data: {
+                full_name: fullName,
+                phone: phone
+            }
+        }
+    });
+
+    if (error) throw error;
+
+    return data;
 }
 
 // Log in with email and password
