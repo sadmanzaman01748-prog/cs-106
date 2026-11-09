@@ -16,6 +16,9 @@
     <!-- Homepage CSS -->
     <link rel="stylesheet" href="style.css">
 
+    <!-- Profile CSS -->
+    <link rel="stylesheet" href="profile.css">
+
 </head>
 <body>
     
@@ -52,41 +55,122 @@
       Book a Visit
     </a>
 
-        <div class="account-dropdown">
-      <button class="account-btn" id="accountBtn"
-              aria-label="Account menu"
-              aria-expanded="false">
+<div class="account-dropdown">
+    <button class="account-btn" id="accountBtn"
+            type="button"
+            aria-label="Account menu"
+            aria-expanded="false">
         <i class="fa-solid fa-circle-user"></i>
-      </button>
-       <div class="dropdown-menu" id="accountMenu">
-        <a href="login.html">Login</a>
-        <a href="signup.html">Sign Up</a>
-      </div>
-    </div>
+    </button>
+
+
+<div class="dropdown-menu hide" id="accountMenu">
+    <a href="profile.html">
+        <i class="fa-regular fa-user"></i> 
+        Profile</a>
+            <a href="#" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> 
+            Logout
+        </a>
+   
+</div>
 
 
 </header>
 
-<main class="profile-page">
+    <main class="profile-page">
 
-    <div class="profile-heading">
-        <span class="profile-tag">
-            <i class="fa-solid fa-user"></i>
-            MEMBER ACCOUNT
-        </span>
+        <div class="profile-heading">
+            <span class="profile-tag">
+                <i class="fa-solid fa-paw"></i>
+                MEMBER ACCOUNT
+            </span>
 
+            <h1>My Profile</h1>
+            <p>Manage your personal information and keep your details up to date.</p>
+        </div>
 
-        <h1>My Profile</h1>
-        <p>Welcome to your profile page! Here you can view and manage your account details.</p>
+        <section class="profile-card">
 
-        
-    </div>
-    <section class="profile-section">
-        <h2>Account Details</h2>
-        <p>Email: user@example.com</p>
-        <p>Username: user123</p>
+            <div class="profile-card-header">
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Your Purrfect Cat Café account details</p>
+                </div>
 
+                <button type="button" id="editBtn" class="edit-btn" disabled>
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Profile
+                </button>
+            </div>
 
+            <div class="profile-user">
+                <div class="profile-avatar" id="profileAvatar">?</div>
+
+                <div>
+                    <h3 id="displayName">Loading...</h3>
+                    <p>Cat Café Member <i class="fa-solid fa-paw"></i></p>
+                </div>
+            </div>
+
+            <p id="profileMessage" class="profile-message"
+               role="status" aria-live="polite"></p>
+
+            <form id="profileForm">
+
+                <div class="profile-fields">
+
+                    <div class="profile-field">
+                        <label for="fullName">
+                            <i class="fa-regular fa-user"></i>
+                            Full Name
+                        </label>
+                        <input type="text" id="fullName"
+                               name="fullName" required disabled>
+                    </div>
+
+                    <div class="profile-field">
+                        <label for="email">
+                            <i class="fa-regular fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" id="email"
+                               name="email" readonly>
+                        <small>Email address cannot be changed here.</small>
+                    </div>
+
+                    <div class="profile-field">
+                        <label for="phone">
+                            <i class="fa-solid fa-phone"></i>
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone"
+                               name="phone" disabled>
+                    </div>
+
+                </div>
+
+                <div class="profile-buttons" id="profileButtons" hidden>
+                    <button type="button" id="cancelBtn" class="cancel-btn">
+                        Cancel
+                    </button>
+
+                    <button type="submit" id="saveBtn" class="save-btn">
+                        <i class="fa-solid fa-check"></i>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+<script src="profile.js"></script>
+<script src="accountDropdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 
 
 </body>

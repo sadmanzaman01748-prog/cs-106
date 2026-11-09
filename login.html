@@ -141,13 +141,16 @@
                 </div>
 
 
-                <!-- Login Button -->
-                <button type="submit" class="login-btn">
-                    Log In to Sanctuary
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
+<!-- Login Button -->
+<button type="submit" class="login-btn">
+    Log In to Sanctuary
+    <i class="fa-solid fa-arrow-right"></i>
+</button>
 
-            </form>
+<!-- Display login errors -->
+<p id="loginError" role="alert" aria-live="polite"></p>
+
+</form>
 
 
             <!-- Sign Up Link -->
@@ -214,32 +217,54 @@
 
         // Login Form Submission
 
-        const loginForm = document.getElementById("loginForm");
+    
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
 
-        loginForm.addEventListener("submit", function (event) {
+loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-            event.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const loginButton = document.querySelector(".login-btn");
 
-            const email = document.getElementById("email").value.trim();
+    loginError.textContent = "";
 
-            const password = passwordInput.value;
+    if (!email || !password) {
+        loginError.textContent = "Please enter your email and password.";
+        return;
+    }
 
-            if (email === "" || password === "") {
+    loginButton.disabled = true;
+    loginButton.textContent = "Logging in...";
 
-                alert("Please enter your email and password.");
+    try {
+        // Function from teammate's supabase.js
+        await logIn(email, password);
 
-                return;
+        // Successful login -> Customer Dashboard
+        window.location.replace("customerDashboard.html");
 
-            }
+    } catch (error) {
+        loginError.textContent = error.message;
 
-            alert("Login form submitted! Connect your backend to verify your account.");
+    } finally {
+        loginButton.disabled = false;
+        loginButton.innerHTML = `
+            Log In to Sanctuary
+            <i class="fa-solid fa-arrow-right"></i>
+        `;
+    }
+});
 
-        });
 
     </script>
 
-          <script src="supabase.js"></script>
-  <script src="supabase-write.js"></script>
+<!-- Supabase Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Backend Helpers -->
+<script src="supabase.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Homepage CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Customer Dashboard CSS -->
+    <link rel="stylesheet" href="customerDashboard.css">
+
+
+
+</head>
+<body>
+    
+<header class="navbar">
+    
+        <a href="index.html" class="logo">
+        <i class="fa-solid fa-paw"></i>
+        <span>Purrfect Cat Cafe</span>
+    </a>
+
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="cats.html">Our Cats</a>
+    <a href="menu.html">Menu</a>
+    <a href="contactUs.html">Contact</a>
+  </nav>
+
+   
+  <div class="nav-actions">
+
+    
+    <div class="search-box">
+        <input type="text" placeholder="Search...">
+
+        <button type="button" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </div>
+  </div>
+
+    <a href="booking.html" class="book-btn">
+      Book a Visit
+    </a>
+
+<div class="account-dropdown">
+    <button class="account-btn" id="accountBtn"
+            type="button"
+            aria-label="Account menu"
+            aria-expanded="false">
+        <i class="fa-solid fa-circle-user"></i>
+    </button>
+
+
+<div class="dropdown-menu hide" id="accountMenu">
+    <a href="profile.html">
+        <i class="fa-regular fa-user"></i> 
+        Profile</a>
+            <a href="#" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> 
+            Logout
+        </a>
+   
+</div>
+</div>
+
+</header>
+
+ <main class="dashboard-page">
+
+        <!-- WELCOME BANNER -->
+<section class="welcome-banner">
+    <div class="welcome-content">
+
+        <span class="member-badge">
+            <i class="fa-solid fa-paw"></i>
+            Member Sanctuary Lounge
+        </span>
+
+        <h1>Welcome Back, <span id="welcomeName">Member</span>! 
+             <i class="fa-solid fa-paw"></i>
+            </h1>
+
+        <p>Ready for another cosy visit with our furry friends?</p>
+
+        <a href="booking.html" class="welcome-btn">
+            Book a Visit
+            <i class="fa-solid fa-paw"></i>
+        </a>
+
+    </div>
+</section>
+        <!-- QUICK ACCESS CARDS -->
+        <section class="quick-cards">
+
+            <a href="myBookings.html" class="quick-card">
+                <div class="quick-icon">
+                    <i class="fa-regular fa-calendar"></i>
+                </div>
+
+                <h3>My Bookings</h3>
+                <p>View and manage your café reservations.</p>
+
+                <div class="quick-link">
+                    Manage passes <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a href="sessions.html" class="quick-card">
+                <div class="quick-icon">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+
+                <h3>Book a Visit</h3>
+                <p>Choose a date and time to visit our café.</p>
+
+                <div class="quick-link">
+                    Reserve snug table <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a href="profile.html" class="quick-card">
+                <div class="quick-icon">
+                    <i class="fa-regular fa-circle-user"></i>
+                </div>
+
+                <h3>My Profile</h3>
+                <p>View and update your personal information.</p>
+
+                <div class="quick-link">
+                    Account settings <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- BOOKING AND PROFILE -->
+        <section class="dashboard-details">
+
+            <!-- UPCOMING BOOKING -->
+            <div class="dashboard-panel booking-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Upcoming Booking</h2>
+                        <p>Your next cosy café appointment</p>
+                    </div>
+
+                    <a href="myBookings.html">View All Bookings <i class="fa-solid fa-chevron-right"></i></a>
+                </div>
+
+                <p id="bookingError" class="dashboard-error" role="alert"></p>
+
+                <div id="bookingContainer">
+                    <p class="loading-text">Loading your bookings...</p>
+                </div>
+
+            </div>
+
+            <!-- MY PROFILE -->
+            <div class="dashboard-panel profile-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>My Profile</h2>
+                        <p>Your personal credentials</p>
+                    </div>
+
+                    <a href="profile.html">
+                        <i class="fa-solid fa-pen"></i> Edit Profile
+                    </a>
+                </div>
+
+                <p id="profileError" class="dashboard-error" role="alert"></p>
+
+                <div class="profile-summary">
+                    <div class="profile-initials" id="profileInitials">?</div>
+
+                    <div>
+                        <h3 id="profileName">Loading...</h3>
+                        <p>🐾 Cat Café Member</p>
+                    </div>
+                </div>
+
+                <div class="profile-info">
+
+                    <div class="profile-info-row">
+                        <div class="info-icon">
+                            <i class="fa-regular fa-user"></i>
+                        </div>
+
+                        <div>
+                            <span>FULL NAME</span>
+                            <strong id="fullName">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="profile-info-row">
+                        <div class="info-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+
+                        <div>
+                            <span>EMAIL ADDRESS</span>
+                            <strong id="emailAddress">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="profile-info-row">
+                        <div class="info-icon">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+
+                        <div>
+                            <span>PHONE NUMBER</span>
+                            <strong id="phoneNumber">—</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+<!-- Supabase JavaScript Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Backend functions provided by teammate -->
+<script src="supabase.js"></script>
+
+<!-- Dashboard functionality -->
+<script src="customerDashboard.js"></script>
+
+<script src="accountDropdown.js"></script>
+
+</body>
+</html>

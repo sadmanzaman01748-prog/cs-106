@@ -354,3 +354,29 @@ body {
         font-size: 9px;
     }
 }
+
+/* LOGIN ERROR MESSAGE */
+
+#loginError {
+    color: #C62828;
+    background-color: #FFF0F0;
+    border: 1px solid #F5C2C2;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 15px;
+    line-height: 1.5;
+}
+
+#loginError:empty {
+    display: none;
+}
+
+/* DISABLE LOGIN BUTTON WHILE LOGGING IN */
+
+.login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
