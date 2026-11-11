@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -242,8 +241,12 @@ loginForm.addEventListener("submit", async function (event) {
         // Function from teammate's supabase.js
         await logIn(email, password);
 
-        // Successful login -> Customer Dashboard
-        window.location.replace("customerDashboard.html");
+        // Admins go to the admin page, members go to their dashboard
+        if (await isAdmin()) {
+            window.location.replace("admin.html");
+        } else {
+            window.location.replace("customerDashboard.html");
+        }
 
     } catch (error) {
         loginError.textContent = error.message;
@@ -265,6 +268,7 @@ loginForm.addEventListener("submit", async function (event) {
 
 <!-- Backend Helpers -->
 <script src="supabase.js"></script>
+<script src="supabase-write.js"></script>
 
 </body>
 </html>
