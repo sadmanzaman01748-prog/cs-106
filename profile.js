@@ -16,9 +16,6 @@ const cancelBtn = document.getElementById("cancelBtn");
 const saveBtn = document.getElementById("saveBtn");
 const profileButtons = document.getElementById("profileButtons");
 
-const accountBtn = document.getElementById("accountBtn");
-const accountMenu = document.getElementById("accountMenu");
-const logoutBtn = document.getElementById("logoutBtn");
 
 let originalProfile = null;
 
