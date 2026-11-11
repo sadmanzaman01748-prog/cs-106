@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - Purrfect Cat Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<header class="navbar">
+  <a href="index.html" class="logo"><i class="fa-solid fa-paw"></i><span>Purrfect Cat Cafe</span></a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="cats.html">Our Cats</a>
+    <a href="menu.html">Menu</a>
+    <a href="contactUs.html">Contact</a>
+  </nav>
+  <a href="booking.html" class="book-btn">Book a Visit</a>
+  <div class="account-dropdown">
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Account menu" aria-expanded="false"><i class="fa-solid fa-circle-user"></i></button>
+    <div class="dropdown-menu" id="accountMenu"></div>
+  </div>
+</header>
+
+<main class="page-main">
+  <div class="page-wrap">
+    <div class="page-heading">
+      <span class="page-tag"><i class="fa-solid fa-calendar-check"></i> MY BOOKINGS</span>
+      <h1>My Bookings</h1>
+      <p>Your upcoming and past visits.</p>
+    </div>
+    <p id="myStatus" class="status-message" role="status"></p>
+    <div id="myBookingList"><p class="empty">Loading your bookings...</p></div>
+  </div>
+</main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="supabase-write.js"></script>
+  <script src="auth-nav.js"></script>
+  <script src="myBookings.js"></script>
+</body>
+</html>

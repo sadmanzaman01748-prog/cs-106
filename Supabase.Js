@@ -105,20 +105,8 @@ async function getCats() {
 
 // Get all sessions, each with a spotsLeft number added
 async function getSessions() {
-  const { data, error } = await supabaseClient
-    .from("sessions")
-    .select("*")
-    .order("session_date")
-    .order("start_time");
+  const { data, error } = await supabaseClient.rpc("get_sessions_with_spots");
   if (error) throw error;
-
-  // Ask the database how many seats are left for each session
-  for (let i = 0; i < data.length; i++) {
-    const result = await supabaseClient.rpc("spots_left", {
-      p_session_id: data[i].id
-    });
-    data[i].spotsLeft = result.data;
-  }
   return data;
 }
 

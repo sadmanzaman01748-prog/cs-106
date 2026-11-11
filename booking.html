@@ -1,75 +1,47 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book a Visit</title>
+  <title>Book a Visit - Purrfect Cat Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
 </head>
 <body>
+<header class="navbar">
+  <a href="index.html" class="logo"><i class="fa-solid fa-paw"></i><span>Purrfect Cat Cafe</span></a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="cats.html">Our Cats</a>
+    <a href="menu.html">Menu</a>
+    <a href="contactUs.html">Contact</a>
+  </nav>
+  <a href="booking.html" class="book-btn">Book a Visit</a>
+  <div class="account-dropdown">
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Account menu" aria-expanded="false"><i class="fa-solid fa-circle-user"></i></button>
+    <div class="dropdown-menu" id="accountMenu"></div>
+  </div>
+</header>
 
-  <header>
-    <nav class="navbar">
-      <h2> Purrfect Cafe</h2>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="booking.html">Book Now</a></li>
-        <li><a href="bookings.html">My Bookings</a></li>
-      </ul>
-    </nav>
-  </header>
+<main class="page-main">
+  <div class="page-wrap">
+    <div class="page-heading">
+      <span class="page-tag"><i class="fa-solid fa-paw"></i> BOOK A VISIT</span>
+      <h1>Choose a Session</h1>
+      <p>Pick a time, choose how many guests (1 to 6), and meet our cats!</p>
+    </div>
+    <p id="bookingStatus" class="status-message" role="status"></p>
+    <div id="sessionList"><p class="empty">Loading sessions...</p></div>
+  </div>
+</main>
 
-  <section class="booking-section">
-    <h1>Book Your Cat Cafe Visit</h1>
-    <p>Reserve your spot and meet our adorable cats!</p>
-
-    <form id="bookingForm">
-
-      <label for="name">Full Name</label>
-      <input type="text" id="name" required>
-
-      <label for="email">Email Address</label>
-      <input type="email" id="email" required>
-
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" required>
-
-      <!-- <label for="date">Booking Date</label>
-      <input type="date" id="date" required>
-
-      <label for="time">Booking Time</label>
-      <select id="time" required>
-        <option value="">Select Time</option>
-        <option value="10:00">10:00 AM</option>
-        <option value="11:00">11:00 AM</option>
-        <option value="12:00">12:00 PM</option>
-        <option value="13:00">1:00 PM</option>
-        <option value="14:00">2:00 PM</option>
-        <option value="15:00">3:00 PM</option>
-        <option value="16:00">4:00 PM</option>
-      </select>
-
-      <label for="guests">Number of Guests</label>
-      <select id="guests" required>
-        <option value="">Select Guests</option>
-        <option value="1">1 Guest</option>
-        <option value="2">2 Guests</option>
-        <option value="3">3 Guests</option>
-        <option value="4">4 Guests</option>
-        <option value="5">5 Guests</option>
-        <option value="6">6 Guests</option>
-      </select> -->
-
-      <button type="submit" class="btn">
-        Confirm Booking
-      </button>
-
-      <p id="message" role="status"></p>
-
-    </form>
-  </section>
-
-  <script src="js/booking.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="supabase-write.js"></script>
+  <script src="auth-nav.js"></script>
+  <script src="booking.js"></script>
 </body>
 </html>
