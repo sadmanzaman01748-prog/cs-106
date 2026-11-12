@@ -1,0 +1,152 @@
+
+/* MENU PAGE */
+
+.menu-page {
+    background: #FFF8F1;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    color: #48240F;
+}
+
+/* HEADING */
+
+.menu-heading {
+    text-align: center;
+    padding: 60px 20px 35px;
+}
+
+.menu-badge {
+    display: inline-block;
+    background: #F2EAE3;
+    color: #79533B;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 12px;
+    margin-bottom: 18px;
+}
+
+.menu-heading h1 {
+    font-size: 40px;
+    color: #5A2C12;
+    margin-bottom: 12px;
+}
+
+.menu-heading p {
+    font-size: 13px;
+    color: #846B5B;
+}
+
+/* MENU LAYOUT */
+
+.menu-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 25px 70px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+}
+
+/* CATEGORY CARDS */
+
+.menu-category {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #F2E8DF;
+    box-shadow: 0 5px 20px rgba(80, 45, 20, 0.05);
+}
+
+.menu-category h2 {
+    font-size: 22px;
+    color: #603216;
+    margin-bottom: 22px;
+}
+
+.menu-category h2 i {
+    margin-right: 10px;
+    color: #A66D45;
+}
+
+/* MENU ITEMS */
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid #F2E8DF;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item span:first-child {
+    font-size: 13px;
+    color: #5A3824;
+}
+
+.menu-item span:last-child {
+    font-size: 14px;
+    font-weight: 600;
+    color: #603216;
+    white-space: nowrap;
+}
+
+/* BOOKING SECTION
+
+.menu-booking {
+    background: #603216;
+    text-align: center;
+    color: white;
+    padding: 60px 20px;
+}
+
+.menu-booking h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.menu-booking p {
+    font-size: 13px;
+    margin-bottom: 25px;
+    color: #F3E3D6;
+}
+
+.menu-book-btn {
+    display: inline-block;
+    background: #FFF8F1;
+    color: #603216;
+    padding: 13px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.menu-book-btn:hover {
+    background: #E8D5C4;
+} */
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+    .menu-container {
+        grid-template-columns: 1fr;
+        padding: 15px 20px 50px;
+    }
+
+    .menu-heading h1 {
+        font-size: 30px;
+    }
+
+    .menu-category {
+        padding: 23px;
+    }
+
+    .menu-booking h2 {
+        font-size: 24px;
+    }
+}

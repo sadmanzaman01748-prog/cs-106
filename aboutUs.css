@@ -1,0 +1,262 @@
+
+/* ABOUT US PAGE */
+
+.about-hero,
+.about-story,
+.mission-section,
+.about-visit {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* HERO SECTION */
+
+.about-hero {
+    background: #FFF8F1;
+    text-align: center;
+    padding: 55px 20px;
+}
+
+.about-badge {
+    display: inline-block;
+    background: #F2EAE3;
+    color: #79533B;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.about-badge i {
+    margin-right: 6px;
+}
+
+.about-hero h1 {
+    font-size: 43px;
+    color: #5A2C12;
+    margin-bottom: 18px;
+}
+
+.about-hero p {
+    font-size: 15px;
+    color: #846B5B;
+    max-width: 550px;
+    margin: auto;
+    line-height: 1.8;
+}
+
+
+/* OUR STORY */
+
+.about-story {
+    display: flex;
+    align-items: center;
+    gap: 65px;
+    max-width: 1150px;
+    margin: auto;
+     padding: 45px 25px 70px;
+}
+
+.story-image,
+.story-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.story-image img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 22px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #B47C57;
+    letter-spacing: 2px;
+}
+
+.story-content h2 {
+    font-size: 32px;
+    color: #5A2C12;
+    margin: 15px 0 20px;
+}
+
+.story-content p {
+    color: #846B5B;
+    font-size: 13px;
+    line-height: 1.9;
+    margin-bottom: 15px;
+}
+
+.about-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: #603216;
+    color: white;
+    padding: 13px 24px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.about-btn:hover {
+    background: #804522;
+}
+
+
+/* MISSION SECTION */
+
+.mission-section {
+    background: #FFF8F1;
+    padding: 85px 25px;
+    text-align: center;
+}
+
+.mission-section h2 {
+    color: #5A2C12;
+    font-size: 32px;
+    margin: 15px 0;
+}
+
+.mission-intro {
+    font-size: 14px;
+    color: #846B5B;
+    margin-bottom: 45px;
+}
+
+.mission-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.mission-card {
+    background: white;
+    padding: 40px 25px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(80, 45, 20, 0.04);
+}
+
+.mission-icon {
+    background: #F5E8DC;
+    color: #8B4D2A;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 25px;
+}
+
+.mission-card h3 {
+    font-size: 18px;
+    color: #5A2C12;
+    margin-bottom: 12px;
+}
+
+.mission-card p {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #846B5B;
+}
+
+
+/* BOOKING SECTION */
+
+.about-visit {
+    /* background: #603216; */
+    text-align: center;
+    padding: 65px 20px;
+    color: #B47C57;
+}
+
+.about-visit > i {
+    font-size: 30px;
+    margin-bottom: 20px;
+    color: #5A2C12;
+}
+
+.about-visit h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #5A2C12;
+}
+
+.about-visit p {
+    max-width: 500px;
+    margin: 0 auto 25px;
+    font-size: 13px;
+    line-height: 1.9;
+    color:  #846B5B;
+}
+
+.visit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #603216;
+    color: white;
+    padding: 13px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.visit-btn:hover {
+    background: #804522;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .about-story {
+        flex-direction: column;
+        gap: 35px;
+        padding: 60px 25px;
+    }
+
+    .story-image,
+    .story-content {
+        width: 100%;
+    }
+
+    .mission-cards {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .about-hero {
+        padding: 60px 20px;
+    }
+
+    .about-hero h1 {
+        font-size: 32px;
+    }
+
+    .story-image img {
+        height: 280px;
+    }
+
+    .story-content h2,
+    .mission-section h2,
+    .about-visit h2 {
+        font-size: 26px;
+    }
+
+    .mission-section {
+        padding: 60px 20px;
+    }
+}
