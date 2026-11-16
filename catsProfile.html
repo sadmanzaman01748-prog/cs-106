@@ -73,12 +73,24 @@
                 aria-expanded="false">
 
                 <i class="fa-solid fa-circle-user"></i>
-            </button>
+           
 
-            <div class="dropdown-menu hide" id="accountMenu">
-                <a href="login.html">Login</a>
-                <a href="signup.html">Sign Up</a>
-            </div>
+                    <!-- Login status indicator -->
+        <span class="login-status-dot"
+              id="loginStatusDot"
+              aria-hidden="true"></span>
+ </button>
+
+<div class="dropdown-menu hide" id="accountMenu">
+    <a href="profile.html">
+        <i class="fa-regular fa-user"></i> 
+        Profile</a>
+            <a href="#" id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i> 
+            Logout
+        </a>
+   
+</div>
 
         </div>
 
@@ -351,8 +363,9 @@
     <script src="catsProfile.js"></script>
 
     <!-- ACCOUNT DROPDOWN -->
-    <!-- Add accountDropdown.js after updating it
-         to support Login/Sign Up for visitors. -->
+    <script src="accountDropdown.js"></script>
+
+    <script src="auth-nav.js"></script>
 
 </body>
 

@@ -65,6 +65,13 @@ function showStatus(element, text, type) {
   let user = null;
   try { user = await getCurrentUser(); } catch (e) { user = null; }
 
+  // Show green dot when user is logged in
+const statusDot = button.querySelector("#loginStatusDot");
+
+if (statusDot) {
+    statusDot.classList.toggle("active", Boolean(user));
+}
+
   menu.replaceChildren();
   if (!user) {
     addLink("login.html", "fa-solid fa-right-to-bracket", "Login");

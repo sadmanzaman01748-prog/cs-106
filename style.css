@@ -709,4 +709,27 @@ body {
     }
 }
 
+/* Account icon with login indicator */
 
+.account-btn {
+    position: relative;
+}
+
+.login-status-dot {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    width: 11px;
+    height: 11px;
+
+    background-color: #22c55e;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+/* Show only when logged in */
+.login-status-dot.active {
+    display: block;
+}

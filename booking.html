@@ -14,14 +14,20 @@
   <a href="index.html" class="logo"><i class="fa-solid fa-paw"></i><span>Purrfect Cat Cafe</span></a>
   <nav class="nav-links">
     <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="cats.html">Our Cats</a>
+    <a href="aboutUs.html">About Us</a>
+    <a href="catsProfile.html">Our Cats</a>
     <a href="menu.html">Menu</a>
     <a href="contactUs.html">Contact</a>
   </nav>
   <a href="booking.html" class="book-btn">Book a Visit</a>
   <div class="account-dropdown">
-    <button class="account-btn" id="accountBtn" type="button" aria-label="Account menu" aria-expanded="false"><i class="fa-solid fa-circle-user"></i></button>
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Account menu" aria-expanded="false"><i class="fa-solid fa-circle-user"></i>
+   
+           <!-- Login status indicator -->
+        <span class="login-status-dot"
+              id="loginStatusDot"
+              aria-hidden="true"></span>
+</button>
     <div class="dropdown-menu" id="accountMenu"></div>
   </div>
 </header>
@@ -43,5 +49,6 @@
   <script src="supabase-write.js"></script>
   <script src="auth-nav.js"></script>
   <script src="booking.js"></script>
+  <script src="accountDropdown.js"></script>
 </body>
 </html>
