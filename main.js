@@ -51,12 +51,12 @@ function performSearch() {
     // Website pages
     const pages = [
         { name: "home", url: "index.html" },
-        { name: "about", url: "about.html" },
-        { name: "about us", url: "about.html" },
-        { name: "cats", url: "cats.html" },
-        { name: "our cats", url: "cats.html" },
+        { name: "about", url: "aboutUs.html" },
+        { name: "about us", url: "aboutUs.html" },
+        { name: "cats", url: "catsProfile.html" },
+        { name: "our cats", url: "catsProfile.html" },
         { name: "menu", url: "menu.html" },
-        { name: "contact", url: "contact.html" },
+        { name: "contact", url: "contactUs.html" },
         { name: "booking", url: "booking.html" },
         { name: "book a visit", url: "booking.html" }
     ];
@@ -87,6 +87,11 @@ searchInput.addEventListener("keydown", function(event) {
 });
 //Initialise Splide Carousel
     document.addEventListener("DOMContentLoaded", function () {
+
+        // Only the home page has the carousel, so skip this on other pages
+        if (typeof Splide === "undefined" || !document.getElementById("heroCarousel")) {
+            return;
+        }
 
         var splide = new Splide("#heroCarousel", {
             type: "loop",
