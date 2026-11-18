@@ -170,3 +170,57 @@ async function updateBooking(bookingId, guests) {
   if (error) throw error;
   if (data.length === 0) throw new Error("That booking was not found, or it is not yours.");
 }
+
+
+// ---------- CONTACT MESSAGES ----------
+
+// Send a message from the contact form (works logged in or not)
+async function sendContactMessage(fullName, email, subject, message) {
+  const row = {
+    full_name: String(fullName || "").trim(),
+    email: String(email || "").trim(),
+    subject: String(subject || "").trim(),
+    message: String(message || "").trim()
+  };
+  if (!row.full_name || !row.email || !row.subject || !row.message) {
+    throw new Error("Please fill in every field.");
+  }
+  if (row.message.length > 2000) {
+    throw new Error("Your message is too long (2000 characters max).");
+  }
+  // no .select() here: visitors are allowed to send, but not to read messages back
+  const { error } = await supabaseClient.from("contact_messages").insert(row);
+  if (error) throw error;
+}
+
+// Admin only: every message, newest first
+async function getContactMessages() {
+  const { data, error } = await supabaseClient
+    .from("contact_messages")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+// Admin only: mark a message as read (true) or unread (false)
+async function markMessageRead(messageId, isRead) {
+  const { data, error } = await supabaseClient
+    .from("contact_messages")
+    .update({ is_read: isRead })
+    .eq("id", messageId)
+    .select();
+  if (error) throw error;
+  if (data.length === 0) throw new Error("Only admins can manage messages.");
+}
+
+// Admin only: delete a message
+async function deleteContactMessage(messageId) {
+  const { data, error } = await supabaseClient
+    .from("contact_messages")
+    .delete()
+    .eq("id", messageId)
+    .select();
+  if (error) throw error;
+  if (data.length === 0) throw new Error("Only admins can delete messages.");
+}

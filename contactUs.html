@@ -144,6 +144,7 @@
                                    id="fullName"
                                    name="fullName"
                                    placeholder="e.g. Sambriddhi Adhikari"
+                                   maxlength="100"
                                    autocomplete="name"
                                    required>
                         </div>
@@ -159,6 +160,7 @@
                                    id="email"
                                    name="email"
                                    placeholder="e.g. sambriddhi@example.com"
+                                   maxlength="200"
                                    autocomplete="email"
                                    required>
                         </div>
@@ -178,6 +180,7 @@
                                id="subject"
                                name="subject"
                                placeholder="e.g. Booking enquiry"
+                               maxlength="150"
                                required>
 
                     </div>
@@ -194,6 +197,7 @@
                         <textarea id="message"
                                   name="message"
                                   rows="5"
+                                  maxlength="2000"
                                   placeholder="Tell us how we can help, or share some love for our furry friends..."
                                   required></textarea>
 
@@ -518,16 +522,50 @@
      
     <script src="main.js"></script>
 
-    <!-- CONTACT FORM DEMO -->
+    <!-- CONTACT FORM: saves the message to Supabase -->
     <script>
         const contactForm = document.getElementById("contactForm");
         const formStatus = document.getElementById("formStatus");
+        const sendBtn = contactForm.querySelector('button[type="submit"]');
 
-        contactForm.addEventListener("submit", function(event) {
+        function setStatus(text, ok) {
+            formStatus.textContent = text;
+            formStatus.style.color = ok ? "#1E7B3A" : "#B3261E";
+        }
+
+        // If a member is logged in, fill in their name and email for them
+        (async function prefill() {
+            try {
+                const user = await getCurrentUser();
+                if (!user) return;
+                const profile = await getMyProfile();
+                const nameBox = document.getElementById("fullName");
+                const emailBox = document.getElementById("email");
+                if (!nameBox.value) nameBox.value = profile.full_name || "";
+                if (!emailBox.value) emailBox.value = user.email || "";
+            } catch (error) { /* not logged in - nothing to fill */ }
+        })();
+
+        contactForm.addEventListener("submit", async function (event) {
             event.preventDefault();
+            sendBtn.disabled = true;
+            setStatus("Sending...", true);
 
-            formStatus.textContent =
-                "Form validated. Connect a backend to send your message.";
+            try {
+                await sendContactMessage(
+                    document.getElementById("fullName").value,
+                    document.getElementById("email").value,
+                    document.getElementById("subject").value,
+                    document.getElementById("message").value
+                );
+                setStatus("Thanks! Your message has been sent. We'll reply within 24 hours.", true);
+                document.getElementById("subject").value = "";
+                document.getElementById("message").value = "";
+            } catch (error) {
+                setStatus(error.message || "Sorry, your message could not be sent. Please try again.", false);
+            } finally {
+                sendBtn.disabled = false;
+            }
         });
     </script>
 </body>

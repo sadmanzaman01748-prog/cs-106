@@ -62,10 +62,12 @@ function displayCats() {
             name.includes(searchText) ||
             breed.includes(searchText);
 
-        // Filter by personality
+        // Filter by temperament (set in the database for café cats).
+        // Cats without one fall back to the words in their personality.
         const matchesFilter =
             activeFilter === "all" ||
-            personality.includes(activeFilter);
+            cat.temperament === activeFilter ||
+            (!cat.temperament && personality.includes(activeFilter));
 
         return matchesSearch && matchesFilter;
     });

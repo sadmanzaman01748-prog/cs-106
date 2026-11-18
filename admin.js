@@ -193,6 +193,99 @@ function renderBookings(rows) {
   bookingsTable.appendChild(t.table);
 }
 
+// ---------- contact messages ----------
+
+const messagesTable = document.getElementById("messagesTable");
+const unreadBadge = document.getElementById("unreadBadge");
+
+function niceDateTime(isoText) {
+  return new Date(isoText).toLocaleString("en-NZ", {
+    day: "numeric", month: "short", hour: "numeric", minute: "2-digit"
+  });
+}
+
+function renderMessages(messages) {
+  messagesTable.replaceChildren();
+
+  const unread = messages.filter(function (m) { return !m.is_read; }).length;
+  unreadBadge.hidden = unread === 0;
+  unreadBadge.textContent = unread + " unread";
+
+  if (messages.length === 0) {
+    messagesTable.appendChild(emptyMessage("No messages yet."));
+    return;
+  }
+
+  const t = makeTable(["Received", "From", "Subject", "Message", "Actions"]);
+  messages.forEach(function (m) {
+    const tr = document.createElement("tr");
+    if (!m.is_read) tr.style.fontWeight = "600";
+
+    cell(tr, niceDateTime(m.created_at));
+
+    const from = document.createElement("td");
+    from.append(m.full_name, document.createElement("br"));
+    const mail = document.createElement("a");
+    mail.href = "mailto:" + m.email + "?subject=" + encodeURIComponent("Re: " + m.subject);
+    mail.textContent = m.email;
+    from.appendChild(mail);
+    tr.appendChild(from);
+
+    cell(tr, m.subject);
+    const body = cell(tr, m.message);
+    body.style.whiteSpace = "pre-wrap";
+    body.style.maxWidth = "320px";
+
+    const td = document.createElement("td");
+    td.className = "actions";
+
+    const readBtn = document.createElement("button");
+    readBtn.type = "button";
+    readBtn.className = "btn-small";
+    readBtn.textContent = m.is_read ? "Mark unread" : "Mark read";
+    readBtn.addEventListener("click", async function () {
+      readBtn.disabled = true;
+      try {
+        await markMessageRead(m.id, !m.is_read);
+        await loadMessages();
+      } catch (error) {
+        showStatus(adminStatus, error.message || "Could not update the message.", "error");
+        readBtn.disabled = false;
+      }
+    });
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "btn-small btn-danger";
+    del.textContent = "Delete";
+    del.addEventListener("click", async function () {
+      if (!window.confirm("Delete this message?")) return;
+      del.disabled = true;
+      try {
+        await deleteContactMessage(m.id);
+        showStatus(adminStatus, "Message deleted.", "success");
+        await loadMessages();
+      } catch (error) {
+        showStatus(adminStatus, error.message || "Could not delete the message.", "error");
+        del.disabled = false;
+      }
+    });
+
+    td.append(readBtn, del);
+    tr.appendChild(td);
+    t.body.appendChild(tr);
+  });
+  messagesTable.appendChild(t.table);
+}
+
+async function loadMessages() {
+  try {
+    renderMessages(await getContactMessages());
+  } catch (error) {
+    messagesTable.replaceChildren(emptyMessage("Could not load messages: " + (error.message || error)));
+  }
+}
+
 // ---------- page start ----------
 
 async function loadAll() {
@@ -200,6 +293,7 @@ async function loadAll() {
     const sessions = await getSessions();
     renderSessions(sessions);
     renderBookings(await loadBookingRows());
+    await loadMessages();
   } catch (error) {
     showStatus(adminStatus, error.message || "Could not load data.", "error");
   }
