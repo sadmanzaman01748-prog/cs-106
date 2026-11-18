@@ -16,6 +16,17 @@ function bookingCard(booking, isUpcoming) {
   time.textContent = niceTime(session.start_time) + " - " + booking.guests + (booking.guests === 1 ? " guest" : " guests");
   card.append(title, time);
 
+  if (booking.cats) {
+    const withCat = document.createElement("p");
+    withCat.className = "places";
+    const thumb = document.createElement("img");
+    thumb.className = "cat-thumb";
+    thumb.src = booking.cats.photo_url || "default-cat.png";
+    thumb.alt = "";
+    withCat.append(thumb, "Meeting " + booking.cats.name);
+    card.appendChild(withCat);
+  }
+
   if (isUpcoming) {
     const button = document.createElement("button");
     button.type = "button";

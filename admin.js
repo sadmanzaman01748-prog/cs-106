@@ -128,7 +128,7 @@ function renderSessions(sessions) {
 async function loadBookingRows() {
   const bookingsResult = await supabaseClient
     .from("bookings")
-    .select("id, user_id, session_id, guests, created_at");
+    .select("id, user_id, session_id, guests, created_at, cat_id");
   if (bookingsResult.error) throw bookingsResult.error;
 
   const profilesResult = await supabaseClient
@@ -141,13 +141,17 @@ async function loadBookingRows() {
     .select("id, session_date, start_time");
   if (sessionsResult.error) throw sessionsResult.error;
 
+  const cats = await getCats();
+  const catNames = {};
+  cats.forEach(function (c) { catNames[c.id] = c.name; });
+
   const people = {};
   profilesResult.data.forEach(function (p) { people[p.id] = p; });
   const sessionsById = {};
   sessionsResult.data.forEach(function (s) { sessionsById[s.id] = s; });
 
   return bookingsResult.data.map(function (b) {
-    return { booking: b, person: people[b.user_id] || {}, session: sessionsById[b.session_id] || {} };
+    return { booking: b, person: people[b.user_id] || {}, session: sessionsById[b.session_id] || {}, catName: b.cat_id ? (catNames[b.cat_id] || "-") : "Any" };
   }).sort(function (a, b) {
     return (a.session.session_date + a.session.start_time) < (b.session.session_date + b.session.start_time) ? -1 : 1;
   });
@@ -159,7 +163,7 @@ function renderBookings(rows) {
     bookingsTable.appendChild(emptyMessage("No bookings yet."));
     return;
   }
-  const t = makeTable(["Date", "Time", "Name", "Phone", "Guests", "Actions"]);
+  const t = makeTable(["Date", "Time", "Name", "Phone", "Guests", "Cat", "Actions"]);
   rows.forEach(function (r) {
     const tr = document.createElement("tr");
     cell(tr, niceDate(r.session.session_date));
@@ -167,6 +171,7 @@ function renderBookings(rows) {
     cell(tr, r.person.full_name || "(no name)");
     cell(tr, r.person.phone || "-");
     cell(tr, String(r.booking.guests));
+    cell(tr, r.catName);
 
     const td = document.createElement("td");
     td.className = "actions";

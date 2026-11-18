@@ -1,0 +1,105 @@
+/* catModal.css - the pop-up that shows a cat bigger. Same colours as the site. */
+
+#catsGrid .cat-card { cursor: pointer; }
+#catsGrid .cat-card:focus-visible { outline: 3px solid #8B5E3C; outline-offset: 3px; }
+
+.cat-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(59, 48, 40, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  animation: catFade 0.2s ease;
+}
+.cat-modal-backdrop[hidden] { display: none; }
+
+.cat-modal {
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 22px;
+  width: min(820px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  font-family: 'Poppins', sans-serif;
+  color: #3B3028;
+  animation: catPop 0.25s ease;
+}
+
+.cat-modal-photo {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  max-height: 90vh;
+  object-fit: cover;
+  border-radius: 22px 0 0 22px;
+  background: #F1E9E1;
+}
+
+.cat-modal-info {
+  padding: 34px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cat-modal-info h2 { font-size: 32px; line-height: 1.1; }
+.cat-modal-breed { color: #8B5E3C; font-weight: 600; }
+.cat-modal-tag {
+  align-self: flex-start;
+  background: #FFE0CF;
+  color: #8B5E3C;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 14px;
+}
+.cat-modal-about { color: #5b4d43; line-height: 1.6; }
+.cat-modal-rescuer { font-size: 13px; color: #8a7a6e; }
+.cat-modal-book {
+  margin-top: auto;
+  align-self: flex-start;
+  background: #8B5E3C;
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 11px 22px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.cat-modal-book:hover { background: #6F472D; }
+
+.cat-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #3B3028;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+.cat-modal-close:hover { background: #FFE0CF; }
+
+@media (max-width: 700px) {
+  .cat-modal { grid-template-columns: 1fr; }
+  .cat-modal-photo { min-height: 0; aspect-ratio: 1 / 1; height: auto; border-radius: 22px 22px 0 0; }
+  .cat-modal-info { padding: 22px 20px 24px; }
+  .cat-modal-info h2 { font-size: 26px; }
+}
+
+@keyframes catFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes catPop { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .cat-modal-backdrop, .cat-modal { animation: none; }
+}

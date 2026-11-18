@@ -114,7 +114,7 @@ async function getSessions() {
 // ---------- BOOKINGS ----------
 
 // Book a session for a number of guests (1 to 6)
-async function createBooking(sessionId, guests) {
+async function createBooking(sessionId, guests, catId) {
   const user = await getCurrentUser();
   if (!user) throw new Error("You need to log in first.");
 
@@ -128,18 +128,40 @@ async function createBooking(sessionId, guests) {
 
   const { data, error } = await supabaseClient
     .from("bookings")
-    .insert({ user_id: user.id, session_id: sessionId, guests: guests })
+    .insert({
+      user_id: user.id,
+      session_id: sessionId,
+      guests: guests,
+      cat_id: catId || null   // optional: the cat they'd like to meet
+    })
     .select()
     .single();
-  if (error) throw error;
+
+  if (error) {
+    // turn the database's duplicate errors into friendly messages
+    if (error.code === "23505" && String(error.message).includes("one_member_per_cat")) {
+      throw new Error("Sorry, someone has just chosen that cat for this session. Please pick another cat.");
+    }
+    if (error.code === "23505") {
+      throw new Error("You already have a booking for this session.");
+    }
+    throw error;
+  }
   return data;
+}
+
+// Which cats are already chosen in upcoming sessions: [{ session_id, cat_id }, ...]
+async function getTakenCats() {
+  const { data, error } = await supabaseClient.rpc("get_taken_cats");
+  if (error) throw error;
+  return data || [];
 }
 
 // Get the logged-in user's bookings, with the session date and time included
 async function getMyBookings() {
   const { data, error } = await supabaseClient
     .from("bookings")
-    .select("id, guests, created_at, sessions(session_date, start_time)")
+    .select("id, guests, created_at, cat_id, sessions(session_date, start_time), cats(name, photo_url)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data;

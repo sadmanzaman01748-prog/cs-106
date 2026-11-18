@@ -113,7 +113,10 @@ function displayBooking(booking) {
 
     // Cat image
     const image = document.createElement("img");
-    image.src = "cat1.png";
+    // Show the chosen cat's photo, or the café photo if no cat was chosen
+    const chosenCat = booking.cats || null;
+    image.src = (chosenCat && chosenCat.photo_url) || "cat1.png";
+    image.onerror = function () { image.onerror = null; image.src = "cat1.png"; };
     image.alt = "Cat Café";
     image.className = "booking-image";
 
@@ -122,7 +125,7 @@ function displayBooking(booking) {
     bookingInfo.className = "booking-info";
 
     const heading = document.createElement("h3");
-    heading.textContent = "Cat Café Visit";
+    heading.textContent = chosenCat ? "Visit with " + chosenCat.name : "Cat Café Visit";
 
     const status = document.createElement("span");
     status.className = "booking-status";

@@ -88,6 +88,9 @@ function displayCats() {
 
         const card = document.createElement("article");
         card.className = "cat-card";
+        card.dataset.catId = cat.id;   // used by catModal.js
+        card.tabIndex = 0;             // keyboard users can open it too
+        card.setAttribute("aria-label", `View ${cat.name || "this cat"}`);
 
 
         /* CAT IMAGE */
@@ -198,7 +201,7 @@ function displayCats() {
         label.textContent = "🐾 Purrfect Cat Café";
 
         const meetLink = document.createElement("a");
-        meetLink.href = "booking.html";
+        meetLink.href = "booking.html?cat=" + cat.id;
         meetLink.textContent = `Meet ${cat.name || "Cat"} →`;
 
         bottom.appendChild(label);
