@@ -29,6 +29,11 @@
   </p>
 
   <div id="warning"></div>
+  <p>
+    <label>Admin password (not saved anywhere):
+      <input type="password" id="adminPassword" autocomplete="off" style="font-size:16px;padding:6px 10px;">
+    </label>
+  </p>
   <button id="runButton" onclick="runAllTests()">Run all tests</button>
   <span id="progress"></span>
   <div id="summary"></div>
@@ -46,7 +51,8 @@
   <script src="supabase-write.js"></script>
   <script>
     // ---------- settings ----------
-    const PASSWORD = "test12345";
+    const PASSWORD = "test12345";   // the two sample member accounts only
+    // The admin password is typed into the page, so it never goes into GitHub
     const MEMBER_A_EMAIL = "aroha@gmail.com";
     const MEMBER_B_EMAIL = "ben@gmail.com";
     const ADMIN_EMAIL = "test1@example.com";
@@ -157,7 +163,10 @@
     }
 
     async function loginAs(email) {
-      await logIn(email, PASSWORD);
+      const password = email === ADMIN_EMAIL
+        ? document.getElementById("adminPassword").value
+        : PASSWORD;
+      await logIn(email, password);
       return await getCurrentUser();
     }
 
@@ -673,6 +682,11 @@
     }
 
     async function runAllTests() {
+      if (!document.getElementById("adminPassword").value) {
+        summary.textContent = "Type the admin password first.";
+        summary.style.color = "#c62828";
+        return;
+      }
       runButton.disabled = true;
       resultsBody.innerHTML = "";
       summary.textContent = "";
