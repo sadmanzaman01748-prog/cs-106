@@ -1,0 +1,494 @@
+
+/* =========================================
+   CONTACT PAGE - PURRFECT CAT CAFE
+========================================= */
+
+/* INTRODUCTION */
+
+.contact-intro {
+    text-align: center;
+    padding: 45px 20px 35px;
+}
+
+.intro-badge {
+    display: inline-block;
+    background-color: #FFE5D6;
+    color: #8B5E3C;
+    padding: 8px 18px;
+    border-radius: 25px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.intro-badge i {
+    margin-right: 6px;
+}
+
+.contact-intro h1 {
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #63391F;
+    margin: 15px 0;
+}
+
+.contact-intro > p {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #76685D;
+}
+
+
+
+
+/* MAIN LAYOUT */
+
+.contact-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 25px 50px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 25px;
+    align-items: start;
+}
+
+.left-column,
+.right-column {
+    min-width: 0;
+}
+
+
+/* CONTACT FORM CARD */
+
+.contact-card {
+    background: #FFFFFF;
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 5px 20px rgba(59, 48, 40, 0.05);
+}
+
+.form-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.eyebrow {
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: #A56A48;
+}
+
+.form-heading h2 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #63391F;
+    margin: 5px 0 8px;
+}
+
+.form-heading p {
+    font-size: 13px;
+    line-height: 1.7;
+    max-width: 420px;
+    color: #82766D;
+}
+
+.heading-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background-color: #FFE5D6;
+    color: #8B5E3C;
+    font-size: 17px;
+    flex-shrink: 0;
+}
+
+
+/* FORM FIELDS */
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    min-width: 0;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 9px;
+    color: #63391F;
+}
+
+.form-group label i {
+    margin-right: 6px;
+    color: #8B5E3C;
+}
+
+.form-group input,
+.form-group textarea {
+    display: block;
+    width: 100%;
+    border: 1px solid transparent;
+    outline: none;
+    background-color: #F8F2E9;
+    color: #3B3028;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    padding: 14px 17px;
+    border-radius: 18px;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #A99A8E;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #8B5E3C;
+}
+
+.form-group textarea {
+    min-height: 150px;
+    line-height: 1.7;
+    resize: vertical;
+}
+
+
+/* NEWSLETTER */
+
+.newsletter-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 5px 0 22px;
+}
+
+.newsletter-row input {
+    accent-color: #8B5E3C;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.newsletter-row label {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #65574B;
+    cursor: pointer;
+}
+
+
+/* SEND MESSAGE BUTTON */
+
+.submit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.send-btn {
+    background-color: #8B5E3C;
+    color: #FFFFFF;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.send-btn:hover {
+    background-color: #6F472D;
+}
+
+.send-btn i {
+    margin-left: 8px;
+}
+
+.purrs-note {
+    color: #8B5E3C;
+    font-size: 12px;
+}
+
+.form-note {
+    margin-top: 22px;
+    color: #82766D;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+#formStatus {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #8B5E3C;
+}
+
+
+/* QUICK ANSWERS */
+
+.quick-answers {
+    background-color: #F8F2E9;
+    padding: 25px;
+    border-radius: 25px;
+    margin-top: 20px;
+}
+
+.quick-answers h3 {
+    font-size: 18px;
+    color: #63391F;
+    margin-bottom: 15px;
+}
+
+.quick-answers h3 i {
+    margin-right: 7px;
+}
+
+.answers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.answer-box {
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 17px;
+}
+
+.answer-box h4 {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #63391F;
+    margin-bottom: 7px;
+}
+
+.answer-box p {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #82766D;
+}
+
+
+/* CAFE HEADQUARTERS */
+
+.info-card {
+    background-color: #F8F2E9;
+    border-radius: 30px;
+    padding: 25px;
+}
+
+.info-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.info-heading h2 {
+    font-size: 21px;
+    font-weight: 700;
+    color: #63391F;
+}
+
+
+.info-box {
+    background-color: #FFFFFF;
+    border-radius: 22px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.address-box {
+    margin-bottom: 12px;
+}
+
+.info-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    background-color: #FFE5D6;
+    border-radius: 50%;
+    color: #8B5E3C;
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+.info-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #A56A48;
+    margin-bottom: 5px;
+}
+
+.info-box p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #3B3028;
+    overflow-wrap: anywhere;
+}
+
+.info-box small {
+    display: block;
+    font-size: 11px;
+    color: #82766D;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+
+/* OPENING HOURS */
+
+.hours-card {
+    background-color: #FFFFFF;
+    border-radius: 22px;
+    padding: 20px;
+}
+
+.hours-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.hours-heading h3 {
+    font-size: 15px;
+    color: #63391F;
+}
+
+.hours-heading i {
+    margin-right: 6px;
+    color: #8B5E3C;
+}
+
+.hours-badge {
+    background-color: #EEF1E8;
+    color: #72836A;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.hours-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    margin-bottom: 14px;
+    color: #65574B;
+}
+
+.hours-row strong {
+    color: #63391F;
+    text-align: right;
+}
+
+.quiet-paws {
+    background-color: #FFF0E8;
+    border-radius: 18px;
+    padding: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #65574B;
+    margin-top: 18px;
+}
+
+.quiet-paws i {
+    color: #8B5E3C;
+    margin-top: 3px;
+}
+
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 950px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        max-width: 700px;
+    }
+}
+
+@media (max-width: 600px) {
+    .contact-intro {
+        padding: 30px 15px;
+    }
+
+    .contact-intro h1 {
+        font-size: 28px;
+    }
+
+    .contact-intro > p {
+        font-size: 13px;
+    }
+
+    .contact-layout {
+        padding: 0 15px 30px;
+    }
+
+    .contact-card {
+        padding: 23px;
+    }
+
+    .form-row,
+    .answers-grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-heading h2 {
+        font-size: 22px;
+    }
+
+    .form-heading p {
+        font-size: 12px;
+    }
+
+    .info-card {
+        padding: 20px;
+    }
+
+    .info-heading h2 {
+        font-size: 19px;
+    }
+
+    .hours-row {
+        font-size: 11px;
+    }
+}

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security proof tests</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 980px; margin: 24px auto; padding: 0 16px; color: #2F3E46; }
+    button { font-size: 16px; padding: 10px 18px; cursor: pointer; }
+    button:disabled { cursor: wait; opacity: 0.6; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 14px; vertical-align: top; }
+    th { background: #F3E9DC; }
+    tr.group td { background: #e4e9ec; font-weight: bold; }
+    .pass { color: #1a7f37; font-weight: bold; }
+    .fail { color: #c62828; font-weight: bold; }
+    .skip { color: #777; font-weight: bold; }
+    #summary { font-size: 20px; margin-top: 14px; font-weight: bold; }
+    #warning { color: #c62828; font-weight: bold; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Security proof tests</h1>
+  <p>
+    Signs in as a visitor, two members (Aroha and Ben) and an admin (test1), then checks that
+    every security rule holds. Run it after <b>harden.sql</b> and <b>sample_data.sql</b>.
+    It only touches test data ("Proof Cat" cats and one test session) and cleans up when it finishes.
+    Take a screenshot of the finished table as evidence for your assessment.
+  </p>
+
+  <div id="warning"></div>
+  <button id="runButton" onclick="runAllTests()">Run all tests</button>
+  <span id="progress"></span>
+  <div id="summary"></div>
+
+  <table>
+    <thead>
+      <tr><th style="width:40%">Test</th><th style="width:8%">Result</th><th>Detail</th></tr>
+    </thead>
+    <tbody id="results"></tbody>
+  </table>
+
+  <!-- Supabase library, then your two files (in this order) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="supabase-write.js"></script>
+  <script>
+    // ---------- settings ----------
+    const PASSWORD = "test12345";
+    const MEMBER_A_EMAIL = "aroha@gmail.com";
+    const MEMBER_B_EMAIL = "ben@gmail.com";
+    const ADMIN_EMAIL = "test1@example.com";
+
+    // a 1x1 pixel PNG, used to test photo uploads
+    const TINY_PNG_BASE64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+
+    const resultsBody = document.getElementById("results");
+    const summary = document.getElementById("summary");
+    const progress = document.getElementById("progress");
+    const runButton = document.getElementById("runButton");
+
+    let passCount = 0;
+    let failCount = 0;
+    let skipCount = 0;
+
+    // things one block of tests hands to the next (ids of test rows, etc.)
+    let shared = {};
+
+    // ---------- showing results ----------
+
+    function shortText(text) {
+      const clean = String(text || "");
+      return clean.length > 170 ? clean.slice(0, 167) + "..." : clean;
+    }
+
+    function addGroup(title) {
+      const row = document.createElement("tr");
+      row.className = "group";
+      const cell = document.createElement("td");
+      cell.colSpan = 3;
+      cell.textContent = title;
+      row.appendChild(cell);
+      resultsBody.appendChild(row);
+      progress.textContent = " Running: " + title;
+    }
+
+    function addResult(name, status, detail) {
+      const row = document.createElement("tr");
+
+      const nameCell = document.createElement("td");
+      nameCell.textContent = name;
+
+      const statusCell = document.createElement("td");
+      statusCell.textContent = status;
+      statusCell.className = status.toLowerCase();
+
+      const detailCell = document.createElement("td");
+      detailCell.textContent = shortText(detail);
+
+      row.appendChild(nameCell);
+      row.appendChild(statusCell);
+      row.appendChild(detailCell);
+      resultsBody.appendChild(row);
+
+      if (status === "PASS") { passCount++; }
+      else if (status === "FAIL") { failCount++; }
+      else { skipCount++; }
+    }
+
+    // ---------- test helpers ----------
+
+    // The action should be REFUSED. If it works, the test fails.
+    async function expectBlocked(name, action) {
+      try {
+        await action();
+        addResult(name, "FAIL", "This was allowed, but it should have been blocked.");
+      } catch (error) {
+        addResult(name, "PASS", "Blocked: " + (error.message || error));
+      }
+    }
+
+    // The action should WORK. If it fails, the test fails.
+    async function expectAllowed(name, action) {
+      try {
+        const result = await action();
+        addResult(name, "PASS", typeof result === "string" ? result : "Worked");
+      } catch (error) {
+        addResult(name, "FAIL", "Should have worked but got: " + (error.message || error));
+      }
+    }
+
+    function expectTrue(name, condition, detail) {
+      addResult(name, condition ? "PASS" : "FAIL", detail);
+    }
+
+    function skip(name, reason) {
+      addResult(name, "SKIP", reason);
+    }
+
+    // Read rows from the database (throws if there is an error)
+    async function readRows(request) {
+      const result = await request;
+      if (result.error) throw result.error;
+      return result.data;
+    }
+
+    // Run a database change that returns rows. Throws if the database refused it,
+    // or if it quietly changed nothing (the security rules hid the row).
+    async function mustChange(request) {
+      const result = await request;
+      if (result.error) throw result.error;
+      if (!result.data || result.data.length === 0) {
+        throw new Error("Nothing was changed (the security rules hid the row)");
+      }
+      return result.data;
+    }
+
+    async function loginAs(email) {
+      await logIn(email, PASSWORD);
+      return await getCurrentUser();
+    }
+
+    function startOf(session) {
+      return new Date(session.session_date + "T" + session.start_time);
+    }
+
+    // starts more than 10 minutes from now
+    function isUpcoming(session) {
+      return startOf(session).getTime() > Date.now() + 10 * 60 * 1000;
+    }
+
+    function isPast(session) {
+      return startOf(session).getTime() < Date.now();
+    }
+
+    async function spotsLeftFor(sessionId) {
+      const result = await supabaseClient.rpc("spots_left", { p_session_id: sessionId });
+      return result.data;
+    }
+
+    function tinyPng() {
+      const bytes = Uint8Array.from(atob(TINY_PNG_BASE64), function (c) { return c.charCodeAt(0); });
+      return new Blob([bytes], { type: "image/png" });
+    }
+
+    // Upload a file; if it worked, remove it again so no test files are left behind
+    async function uploadAndRemove(path, file) {
+      const upload = await supabaseClient.storage.from("cat-photos").upload(path, file);
+      if (upload.error) throw upload.error;
+      await supabaseClient.storage.from("cat-photos").remove([path]);
+    }
+
+    // ---------- 1. visitor ----------
+
+    async function runVisitorTests() {
+      addGroup("1. Visitor (not logged in)");
+      await logOut();
+
+      shared.sessions = await readRows(
+        supabaseClient.from("sessions").select("*").order("session_date").order("start_time")
+      );
+      const cats = await getCats();
+      expectTrue("Visitor can browse the cats", cats.length >= 48, cats.length + " cats visible");
+      expectTrue("Visitor can see the sessions", shared.sessions.length > 0, shared.sessions.length + " sessions visible");
+
+      const upcoming = shared.sessions.find(isUpcoming);
+      if (upcoming) {
+        const left = await spotsLeftFor(upcoming.id);
+        expectTrue("Visitor can see places left", typeof left === "number", "places left: " + left);
+      } else {
+        skip("Visitor can see places left", "No upcoming session found");
+      }
+
+      const bookingsSeen = await readRows(supabaseClient.from("bookings").select("id"));
+      expectTrue("Visitor cannot see any bookings", bookingsSeen.length === 0, bookingsSeen.length + " bookings visible");
+
+      const profilesSeen = await readRows(supabaseClient.from("profiles").select("id"));
+      expectTrue("Visitor cannot see any profiles", profilesSeen.length === 0, profilesSeen.length + " profiles visible");
+
+      await expectBlocked("Visitor cannot add a cat", async function () {
+        const cat = await addCat("Proof Cat Visitor", "Tabby", "Should never exist", null);
+        await supabaseClient.from("cats").delete().eq("id", cat.id);
+      });
+
+      const sessionToTry = upcoming || shared.sessions[0];
+      await expectBlocked("Visitor cannot book a session", function () {
+        return createBooking(sessionToTry.id, 1);
+      });
+
+      await expectBlocked("Visitor cannot upload a photo", function () {
+        return uploadAndRemove("visitor/proof-" + Date.now() + ".png", tinyPng());
+      });
+    }
+
+    // ---------- 2. admin sets up safe test data ----------
+
+    async function runAdminSetup() {
+      addGroup("2. Admin sets up test data");
+      const admin = await loginAs(ADMIN_EMAIL);
+      shared.adminId = admin.id;
+
+      expectTrue("Admin account is recognised as an admin", (await isAdmin()) === true, "isAdmin() returned true");
+
+      const cats = await getCats();
+      const pixel = cats.find(function (c) { return c.name === "Pixel"; });
+      shared.bOwnerId = pixel ? pixel.owner_id : null;
+
+      shared.testDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      await expectAllowed("Admin can add a session", async function () {
+        const session = await addSession(shared.testDate, "10:00", 8);
+        shared.testSessionId = session.id;
+        return "Created test session " + session.id + " on " + shared.testDate;
+      });
+
+      await expectAllowed("Admin can add a café cat (no owner)", async function () {
+        const rows = await mustChange(
+          supabaseClient.from("cats")
+            .insert({ name: "Proof Cat Cafe", breed: "Tabby", personality: "Test cat", owner_id: null })
+            .select()
+        );
+        shared.cafeCatId = rows[0].id;
+        return "Created café cat " + rows[0].id;
+      });
+
+      if (shared.bOwnerId) {
+        await expectAllowed("Admin can add a cat owned by Ben", async function () {
+          const rows = await mustChange(
+            supabaseClient.from("cats")
+              .insert({ name: "Proof Cat Ben", breed: "Tabby", personality: "Test cat", owner_id: shared.bOwnerId })
+              .select()
+          );
+          shared.benCatId = rows[0].id;
+          return "Created cat " + rows[0].id + " owned by Ben";
+        });
+      } else {
+        skip("Admin can add a cat owned by Ben", "Could not find Ben's id from the cat Pixel");
+      }
+
+      shared.allBookings = await readRows(
+        supabaseClient.from("bookings").select("id, user_id, session_id, guests")
+      );
+      const people = new Set(shared.allBookings.map(function (b) { return b.user_id; }));
+      expectTrue("Admin can see everyone's bookings", people.size >= 3,
+        shared.allBookings.length + " bookings from " + people.size + " people");
+
+      const profiles = await readRows(supabaseClient.from("profiles").select("id"));
+      expectTrue("Admin can see all profiles", profiles.length >= 6, profiles.length + " profiles visible");
+    }
+
+    // ---------- 3. member Aroha ----------
+
+    async function runMemberATests() {
+      addGroup("3. Member: Aroha (owns Willow and Bean)");
+      const a = await loginAs(MEMBER_A_EMAIL);
+      shared.aId = a.id;
+
+      const mine = await readRows(supabaseClient.from("bookings").select("id, user_id, session_id, guests"));
+      shared.aBookings = mine;
+      expectTrue("Aroha sees only her own bookings",
+        mine.length > 0 && mine.every(function (b) { return b.user_id === a.id; }),
+        mine.length + " bookings, all hers");
+
+      const profiles = await readRows(supabaseClient.from("profiles").select("id"));
+      expectTrue("Aroha sees only her own profile",
+        profiles.length === 1 && profiles[0].id === a.id, profiles.length + " profile visible");
+
+      // --- other people's cats (test cats, so nothing real is ever at risk) ---
+      if (shared.cafeCatId) {
+        await expectBlocked("Aroha cannot edit a café cat", function () {
+          return updateCat(shared.cafeCatId, "Hacked", "Tabby", "Hacked", null);
+        });
+        await expectBlocked("Aroha cannot delete a café cat", function () {
+          return deleteCat(shared.cafeCatId);
+        });
+      } else {
+        skip("Aroha cannot edit or delete a café cat", "Test café cat was not created");
+      }
+
+      if (shared.benCatId) {
+        await expectBlocked("Aroha cannot edit Ben's cat", function () {
+          return updateCat(shared.benCatId, "Hacked", "Tabby", "Hacked", null);
+        });
+        await expectBlocked("Aroha cannot delete Ben's cat", function () {
+          return deleteCat(shared.benCatId);
+        });
+      } else {
+        skip("Aroha cannot edit or delete Ben's cat", "Test cat for Ben was not created");
+      }
+
+      // --- her own cats ---
+      let catA = null;
+      await expectAllowed("Aroha can add her own cat", async function () {
+        catA = await addCat("Proof Cat A", "Tabby", "Added by the proof test", null);
+        if (catA.owner_id !== a.id) throw new Error("owner_id was not set to Aroha");
+        if (!catA.rescuer_name) throw new Error("rescuer_name was not filled in");
+        return "Owner and rescuer name set automatically (" + catA.rescuer_name + ")";
+      });
+
+      if (catA) {
+        await expectAllowed("Aroha can edit her own cat", function () {
+          return updateCat(catA.id, "Proof Cat A (edited)", "Tabby", "Edited by the proof test", null);
+        });
+        await expectAllowed("Aroha can delete her own cat", function () {
+          return deleteCat(catA.id);
+        });
+      } else {
+        skip("Aroha can edit and delete her own cat", "Her cat was not created");
+      }
+
+      await expectAllowed("Aroha can add a second cat (kept for the admin test)", async function () {
+        const cat = await addCat("Proof Cat B", "Tabby", "Kept for the admin test", null);
+        shared.proofCatBId = cat.id;
+        return "Created cat " + cat.id;
+      });
+
+      if (shared.proofCatBId && shared.bOwnerId) {
+        await expectBlocked("Aroha cannot give her cat to someone else", function () {
+          return mustChange(
+            supabaseClient.from("cats").update({ owner_id: shared.bOwnerId }).eq("id", shared.proofCatBId).select()
+          );
+        });
+      } else {
+        skip("Aroha cannot give her cat to someone else", "Needed test cat or Ben's id is missing");
+      }
+
+      // --- her profile ---
+      await expectAllowed("Aroha can update her own profile", async function () {
+        const profile = await getMyProfile();
+        await updateMyProfile(profile.full_name, profile.phone);
+        return "Profile saved";
+      });
+
+      await expectBlocked("Aroha cannot make herself an admin", async function () {
+        await mustChange(
+          supabaseClient.from("profiles").update({ role: "admin" }).eq("id", a.id).select()
+        );
+        // if it was wrongly allowed, undo it straight away
+        await supabaseClient.from("profiles").update({ role: "user" }).eq("id", a.id);
+      });
+
+      // --- sessions (admin only) ---
+      await expectBlocked("Aroha cannot add a session", async function () {
+        const session = await addSession(shared.testDate || "2027-01-01", "13:00", 8);
+        try { await deleteSession(session.id); } catch (e) { /* undo if wrongly allowed */ }
+      });
+
+      if (shared.testSessionId) {
+        await expectBlocked("Aroha cannot edit a session", function () {
+          return updateSession(shared.testSessionId, shared.testDate, "10:00:00", 8);
+        });
+        await expectBlocked("Aroha cannot delete a session", function () {
+          return deleteSession(shared.testSessionId);
+        });
+
+        // --- bookings ---
+        await expectAllowed("Aroha can book a session", async function () {
+          const booking = await createBooking(shared.testSessionId, 1);
+          shared.aTestBookingId = booking.id;
+          return "Booked the test session (booking " + booking.id + ")";
+        });
+
+        if (shared.aTestBookingId) {
+          await expectAllowed("Aroha can change her own booking", function () {
+            return updateBooking(shared.aTestBookingId, 2);
+          });
+        }
+      } else {
+        skip("Aroha session and booking tests", "Test session was not created");
+      }
+
+      // --- the one-booking-per-session rule ---
+      const sessionsById = {};
+      shared.sessions.forEach(function (s) { sessionsById[s.id] = s; });
+      const duplicate = mine
+        .map(function (b) { return sessionsById[b.session_id]; })
+        .find(function (s) { return s && isUpcoming(s); });
+
+      if (duplicate) {
+        await expectBlocked("Aroha cannot book the same session twice", async function () {
+          const result = await supabaseClient.from("bookings")
+            .insert({ user_id: a.id, session_id: duplicate.id, guests: 1 }).select();
+          if (result.error) throw result.error;
+          await supabaseClient.from("bookings").delete().eq("id", result.data[0].id);
+        });
+      } else {
+        skip("Aroha cannot book the same session twice", "No upcoming booking to repeat");
+      }
+
+      // --- photos ---
+      await expectAllowed("Aroha can upload a photo into her own folder", async function () {
+        const path = a.id + "/proof-" + Date.now() + ".png";
+        await uploadAndRemove(path, tinyPng());
+        return "Uploaded and removed " + path;
+      });
+
+      if (shared.bOwnerId) {
+        await expectBlocked("Aroha cannot upload into Ben's folder", function () {
+          return uploadAndRemove(shared.bOwnerId + "/proof-" + Date.now() + ".png", tinyPng());
+        });
+      } else {
+        skip("Aroha cannot upload into Ben's folder", "Ben's id is missing");
+      }
+
+      await expectBlocked("Aroha cannot upload a non-image file", function () {
+        const textFile = new Blob(["not a picture"], { type: "text/plain" });
+        return uploadAndRemove(a.id + "/proof-" + Date.now() + ".txt", textFile);
+      });
+    }
+
+    // ---------- 4. member Ben ----------
+
+    async function runMemberBTests() {
+      addGroup("4. Member: Ben (owns Pixel)");
+      const b = await loginAs(MEMBER_B_EMAIL);
+      shared.bId = b.id;
+
+      const mine = await readRows(supabaseClient.from("bookings").select("id, user_id, session_id, guests"));
+      expectTrue("Ben sees only his own bookings",
+        mine.length > 0 && mine.every(function (x) { return x.user_id === b.id; }),
+        mine.length + " bookings, all his");
+      const bookedByBen = new Set(mine.map(function (x) { return x.session_id; }));
+
+      if (shared.aId) {
+        const peekProfile = await readRows(supabaseClient.from("profiles").select("id").eq("id", shared.aId));
+        expectTrue("Ben cannot see Aroha's profile", peekProfile.length === 0, peekProfile.length + " rows visible");
+      }
+
+      // --- Aroha's test booking (safe to poke at) ---
+      if (shared.aTestBookingId) {
+        const peek = await readRows(supabaseClient.from("bookings").select("id").eq("id", shared.aTestBookingId));
+        expectTrue("Ben cannot see Aroha's booking", peek.length === 0, peek.length + " rows visible");
+
+        await expectBlocked("Ben cannot change Aroha's booking", function () {
+          return mustChange(
+            supabaseClient.from("bookings").update({ guests: 2 }).eq("id", shared.aTestBookingId).select()
+          );
+        });
+        await expectBlocked("Ben cannot cancel Aroha's booking", function () {
+          return mustChange(
+            supabaseClient.from("bookings").delete().eq("id", shared.aTestBookingId).select()
+          );
+        });
+      } else {
+        skip("Ben cannot see, change or cancel Aroha's booking", "Aroha's test booking was not created");
+      }
+
+      // --- cats ---
+      if (shared.proofCatBId) {
+        await expectBlocked("Ben cannot edit Aroha's cat", function () {
+          return updateCat(shared.proofCatBId, "Hacked", "Tabby", "Hacked", null);
+        });
+        await expectBlocked("Ben cannot delete Aroha's cat", function () {
+          return deleteCat(shared.proofCatBId);
+        });
+      } else {
+        skip("Ben cannot edit or delete Aroha's cat", "Aroha's test cat was not created");
+      }
+
+      if (shared.benCatId) {
+        await expectAllowed("Ben can edit a cat that is his", function () {
+          return updateCat(shared.benCatId, "Proof Cat Ben", "Tabby", "Edited by Ben", null);
+        });
+      } else {
+        skip("Ben can edit a cat that is his", "Test cat for Ben was not created");
+      }
+
+      // --- no more than 6 guests ---
+      if (shared.testSessionId) {
+        await expectBlocked("Ben cannot book more than 6 guests", async function () {
+          const result = await supabaseClient.from("bookings")
+            .insert({ user_id: b.id, session_id: shared.testSessionId, guests: 7 }).select();
+          if (result.error) throw result.error;
+          await supabaseClient.from("bookings").delete().eq("id", result.data[0].id);
+        });
+      }
+
+      // --- overbooking ---
+      const upcoming = shared.sessions.filter(isUpcoming);
+      let tight = null;
+      for (let i = 0; i < upcoming.length && !tight; i++) {
+        const s = upcoming[i];
+        if (bookedByBen.has(s.id) || s.id === shared.testSessionId) continue;
+        const left = await spotsLeftFor(s.id);
+        if (left !== null && left >= 0 && left <= 5) tight = { session: s, left: left };
+      }
+
+      if (tight) {
+        await expectBlocked(
+          "Ben cannot overbook a session (" + tight.left + " places left, tried 6)",
+          async function () {
+            const result = await supabaseClient.from("bookings")
+              .insert({ user_id: b.id, session_id: tight.session.id, guests: 6 }).select();
+            if (result.error) throw result.error;
+            await supabaseClient.from("bookings").delete().eq("id", result.data[0].id);
+          }
+        );
+      } else {
+        skip("Ben cannot overbook a session", "No nearly-full upcoming session found");
+      }
+
+      // --- past sessions ---
+      const past = shared.sessions.find(isPast);
+      if (past) {
+        await expectBlocked("Ben cannot book a session that has already started", async function () {
+          const result = await supabaseClient.from("bookings")
+            .insert({ user_id: b.id, session_id: past.id, guests: 1 }).select();
+          if (result.error) throw result.error;
+          await supabaseClient.from("bookings").delete().eq("id", result.data[0].id);
+        });
+      } else {
+        skip("Ben cannot book a session that has already started", "No past session found");
+      }
+
+      // --- the normal happy path: book, change, cancel ---
+      let free = null;
+      for (let i = 0; i < upcoming.length && !free; i++) {
+        const s = upcoming[i];
+        if (bookedByBen.has(s.id) || s.id === shared.testSessionId) continue;
+        const left = await spotsLeftFor(s.id);
+        if (left !== null && left >= 2) free = s;
+      }
+
+      if (free) {
+        let booking = null;
+        await expectAllowed("Ben can book a session", async function () {
+          booking = await createBooking(free.id, 1);
+          return "Booked session " + free.id;
+        });
+        if (booking) {
+          await expectAllowed("Ben can change his booking", function () {
+            return updateBooking(booking.id, 2);
+          });
+          await expectAllowed("Ben can cancel his booking", async function () {
+            await cancelBooking(booking.id);
+            const left = await readRows(supabaseClient.from("bookings").select("id").eq("id", booking.id));
+            if (left.length !== 0) throw new Error("The booking still exists");
+            return "Booking removed";
+          });
+        }
+      } else {
+        skip("Ben can book, change and cancel a booking", "No upcoming session with free places found");
+      }
+    }
+
+    // ---------- 5. admin powers and clean-up ----------
+
+    async function runAdminTests() {
+      addGroup("5. Admin powers and clean-up");
+      await loginAs(ADMIN_EMAIL);
+
+      if (shared.proofCatBId) {
+        await expectAllowed("Admin can edit a member's cat", function () {
+          return updateCat(shared.proofCatBId, "Proof Cat B (admin edit)", "Tabby", "Edited by admin", null);
+        });
+        await expectAllowed("Admin can delete a member's cat", function () {
+          return deleteCat(shared.proofCatBId);
+        });
+      } else {
+        skip("Admin can edit and delete a member's cat", "Aroha's test cat was not created");
+      }
+
+      if (shared.testSessionId) {
+        await expectAllowed("Admin can edit a session", function () {
+          return updateSession(shared.testSessionId, shared.testDate, "10:00:00", 7);
+        });
+      }
+
+      // a session that already has several guests booked
+      const crowded = (shared.allBookings || []).find(function (b) { return b.guests >= 2; });
+      if (crowded) {
+        const original = shared.sessions.find(function (s) { return s.id === crowded.session_id; });
+
+        await expectBlocked("Admin cannot lower a session's capacity below the places booked", async function () {
+          const result = await supabaseClient.from("sessions")
+            .update({ capacity: 1 }).eq("id", crowded.session_id).select();
+          if (result.error) throw result.error;
+          // if it was wrongly allowed, put it back
+          if (original) {
+            await supabaseClient.from("sessions").update({ capacity: original.capacity }).eq("id", crowded.session_id);
+          }
+        });
+
+        await expectBlocked("Admin cannot delete a session that has bookings", async function () {
+          const result = await supabaseClient.from("sessions").delete().eq("id", crowded.session_id).select();
+          if (result.error) throw result.error;
+        });
+      } else {
+        skip("Admin cannot shrink or delete a session that has bookings", "No booking with 2+ guests found");
+      }
+
+      if (shared.aTestBookingId) {
+        await expectAllowed("Admin can cancel anyone's booking", async function () {
+          await mustChange(supabaseClient.from("bookings").delete().eq("id", shared.aTestBookingId).select());
+          return "Cancelled Aroha's test booking";
+        });
+      }
+
+      if (shared.bId) {
+        await expectAllowed("Admin can upload into a member's folder", async function () {
+          const path = shared.bId + "/proof-admin-" + Date.now() + ".png";
+          await uploadAndRemove(path, tinyPng());
+          return "Uploaded and removed " + path;
+        });
+      }
+
+      if (shared.testSessionId) {
+        await expectAllowed("Admin can delete a session (clean-up)", function () {
+          return deleteSession(shared.testSessionId);
+        });
+      }
+
+      await expectAllowed("Clean-up: remove every Proof Cat test cat", async function () {
+        const rows = await readRows(
+          supabaseClient.from("cats").delete().like("name", "Proof Cat%").select()
+        );
+        return rows.length + " test cats removed";
+      });
+
+      const cats = await getCats();
+      const leftovers = cats.filter(function (c) { return c.name.indexOf("Proof Cat") === 0; });
+      expectTrue("No test cats left behind", leftovers.length === 0, cats.length + " cats in the table");
+    }
+
+    // ---------- run everything ----------
+
+    async function runBlock(title, block) {
+      try {
+        await block();
+      } catch (error) {
+        addResult(title + " could not finish", "FAIL", error.message || error);
+      }
+    }
+
+    async function runAllTests() {
+      runButton.disabled = true;
+      resultsBody.innerHTML = "";
+      summary.textContent = "";
+      summary.style.color = "";
+      passCount = 0;
+      failCount = 0;
+      skipCount = 0;
+      shared = {};
+
+      await runBlock("Visitor tests", runVisitorTests);
+      await runBlock("Admin set-up", runAdminSetup);
+      await runBlock("Aroha's tests", runMemberATests);
+      await runBlock("Ben's tests", runMemberBTests);
+      await runBlock("Admin tests", runAdminTests);
+
+      try { await logOut(); } catch (error) { /* ignore */ }
+
+      progress.textContent = "";
+      summary.textContent = passCount + " passed, " + failCount + " failed, " + skipCount + " skipped";
+      summary.style.color = failCount === 0 ? "#1a7f37" : "#c62828";
+      runButton.disabled = false;
+    }
+
+    // warn if the old supabase-write.js is still in use (it hides refused edits)
+    if (typeof updateCat === "function" && updateCat.toString().indexOf(".select()") === -1) {
+      document.getElementById("warning").textContent =
+        "Your supabase-write.js is the OLD copy. Replace it with the new one before running the tests.";
+    }
+  </script>
+</body>
+</html>

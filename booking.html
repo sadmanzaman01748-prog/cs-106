@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Visit - Purrfect Cat Cafe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<header class="navbar">
+  <a href="index.html" class="logo"><i class="fa-solid fa-paw"></i><span>Purrfect Cat Cafe</span></a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="aboutUs.html">About Us</a>
+    <a href="catsProfile.html">Our Cats</a>
+    <a href="menu.html">Menu</a>
+    <a href="contactUs.html">Contact</a>
+  </nav>
+  <a href="booking.html" class="book-btn">Book a Visit</a>
+  <div class="account-dropdown">
+    <button class="account-btn" id="accountBtn" type="button" aria-label="Account menu" aria-expanded="false"><i class="fa-solid fa-circle-user"></i>
+   
+           <!-- Login status indicator -->
+        <span class="login-status-dot"
+              id="loginStatusDot"
+              aria-hidden="true"></span>
+</button>
+    <div class="dropdown-menu" id="accountMenu"></div>
+  </div>
+</header>
+
+<main class="page-main">
+  <div class="page-wrap">
+    <div class="page-heading">
+      <span class="page-tag"><i class="fa-solid fa-paw"></i> BOOK A VISIT</span>
+      <h1>Choose a Session</h1>
+      <p>Pick a time, choose how many guests (1 to 6), and meet our cats!</p>
+    </div>
+    <div id="catBanner" class="cat-banner" hidden></div>
+    <p id="bookingStatus" class="status-message" role="status"></p>
+    <div id="sessionList"><p class="empty">Loading sessions...</p></div>
+  </div>
+</main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="supabase-write.js"></script>
+  <script src="auth-nav.js"></script>
+  <script src="booking.js"></script>
+</body>
+</html>

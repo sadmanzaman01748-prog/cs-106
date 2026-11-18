@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Supabase connection test</title>
+</head>
+<body>
+  <h1>Supabase connection test</h1>
+
+  <button onclick="testCats()">Load cats</button>
+  <button onclick="testSessions()">Load sessions</button>
+  <button onclick="testSignUp()">Sign up test user</button>
+  <button onclick="testLogIn()">Log in test user</button>
+  <button onclick="testBook()">Book first session (2 guests)</button>
+  <button onclick="testMyBookings()">Show my bookings</button>
+
+  <pre id="output">Click a button to test.</pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script>
+    const output = document.getElementById("output");
+    const testEmail = "test1@example.com";
+    const testPassword = "test12345";
+
+    // Show any result (or error) on the page
+    function show(thing) {
+      output.textContent = JSON.stringify(thing, null, 2);
+    }
+
+    async function testCats() {
+      try { show(await getCats()); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testSessions() {
+      try { show(await getSessions()); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testSignUp() {
+      try { show(await signUp(testEmail, testPassword, "Test User")); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testLogIn() {
+      try { show(await logIn(testEmail, testPassword)); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testBook() {
+      try {
+        const sessions = await getSessions();
+        show(await createBooking(sessions[0].id, 2));
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testMyBookings() {
+      try { show(await getMyBookings()); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+  </script>
+</body>
+</html>

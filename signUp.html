@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up | Purrfect Cat Café</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Signup CSS -->
+    <link rel="stylesheet" href="signUp.css">
+
+    
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="signup-header">
+
+        <a href="index.html" class="back-home">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Home
+        </a>
+
+        <a href="index.html" class="signup-logo">
+            <i class="fa-solid fa-paw"></i>
+            <span>Purrfect Café</span>
+        </a>
+
+    </header>
+
+
+    <!-- Main Signup Section -->
+    <main class="signup-container">
+
+        <div class="signup-card">
+
+            <!-- Heading -->
+            <div class="signup-heading">
+
+                <div class="signup-small-logo">
+                    <i class="fa-solid fa-paw"></i>
+                    <span>Purrfect Cat Café</span>
+                </div>
+
+                <h1>Create Your Account</h1>
+
+
+
+            </div>
+
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+
+                <!-- Full Name -->
+                <div class="form-group full-width">
+
+                    <label for="fullName">Full Name</label>
+
+                    <div class="input-wrapper">
+
+                        <i class="fa-regular fa-user input-icon"></i>
+
+                        <input type="text" id="fullName" name="fullName" placeholder="e.g. Sambriddhi Adhikari"
+                            autocomplete="name" required>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Email and Phone -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="email">Email Address</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-regular fa-envelope input-icon"></i>
+
+                            <input type="email" id="email" name="email" placeholder="sambriddhi@gmail.com"
+                                autocomplete="email" required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="phone">Phone Number</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-phone input-icon"></i>
+
+                            <input type="tel" id="phone" name="phone" placeholder="+64 20 2000 0000" autocomplete="tel"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password and Confirm Password -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="password">Password</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input type="password" id="password" name="password" placeholder="Enter password"
+                                autocomplete="new-password" minlength="8" required>
+
+                            <button type="button" class="password-toggle" data-target="password"
+                                aria-label="Show password">
+
+                                <i class="fa-regular fa-eye-slash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">Confirm Password</label>
+
+                        <div class="input-wrapper">
+
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                placeholder="Confirm password" autocomplete="new-password" minlength="8" required>
+
+                            <button type="button" class="password-toggle" data-target="confirmPassword"
+                                aria-label="Show password">
+
+                                <i class="fa-regular fa-eye-slash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Create Account Button -->
+                <button type="submit" class="signup-btn">
+
+                    Create Account
+
+                    <i class="fa-solid fa-paw"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- Login Link and Home Link -->
+            <div class="signup-bottom">
+
+                <p>
+                    Already have an account?
+                    <a href="login.html">Login here</a>
+                </p>
+
+                <a href="index.html" class="return-home">
+                    <i class="fa-solid fa-house"></i>
+                    Back to Home Page
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="signup-footer">
+
+        <p>
+            © 2024 Purrfect Cat Café.
+            Crafted with warm paws &amp; fresh brew.
+        </p>
+
+    </footer>
+
+
+    <!-- JavaScript -->
+
+<!-- Load Supabase first, then your teammate's helpers -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+
+
+    <script>
+
+        // SHOW / HIDE PASSWORD
+
+        const passwordButtons = document.querySelectorAll(".password-toggle");
+
+        passwordButtons.forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                const targetId = button.getAttribute("data-target");
+
+                const passwordInput = document.getElementById(targetId);
+
+                const icon = button.querySelector("i");
+
+                if (passwordInput.type === "password") {
+
+                    passwordInput.type = "text";
+
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+
+                    button.setAttribute("aria-label", "Hide password");
+
+                } else {
+
+                    passwordInput.type = "password";
+
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+
+                    button.setAttribute("aria-label", "Show password");
+
+                }
+
+            });
+
+        });
+
+
+// SIGNUP FORM SUBMISSION
+
+const signupForm = document.getElementById("signupForm");
+
+signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    if (!fullName || !email || !phone) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match. Please try again.");
+        return;
+    }
+
+    const submitButton = signupForm.querySelector(
+        'button[type="submit"]'
+    );
+
+    submitButton.disabled = true;
+
+    try {
+        const result = await signUp(
+            email,
+            password,
+            fullName,
+            phone
+        );
+
+        if (result.session) {
+            alert("Account created! You are now logged in.");
+            window.location.href = "index.html";
+        } else {
+            alert(
+                "Please check your email for a confirmation link. " +
+                "After confirming, you can log in."
+            );
+            window.location.href = "login.html";
+        }
+    } catch (error) {
+        alert(error.message || "Unable to sign up. Please try again.");
+    } finally {
+        submitButton.disabled = false;
+    }
+});
+
+
+ 
+    </script>
+
+
+</body>
+
+</html>

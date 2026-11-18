@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Write functions test</title>
+</head>
+<body>
+  <h1>Write functions test</h1>
+  <p>Log in first (same test account as before), then try the buttons in order.</p>
+
+  <button onclick="testLogIn()">1. Log in test user</button>
+  <button onclick="testAddCat()">2. Add test cat</button>
+  <button onclick="testEditCat()">3. Edit test cat</button>
+  <button onclick="testShowCats()">Show all cats</button>
+  <button onclick="testDeleteCat()">4. Delete test cat</button>
+  <br><br>
+  <button onclick="testAddSession()">Add session (a week from today)</button>
+  <button onclick="testUpdateBooking()">Change my first booking to 3 guests</button>
+  <br><br>
+  <input type="file" id="photoInput" accept="image/*">
+  <button onclick="testUpload()">Upload photo</button>
+
+  <pre id="output">Click a button to test.</pre>
+
+  <!-- Supabase library, then your two files (in this order) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="supabase-write.js"></script>
+  <script>
+    const output = document.getElementById("output");
+
+    // Show any result (or error) on the page
+    function show(thing) {
+      output.textContent = JSON.stringify(thing, null, 2);
+    }
+
+    // Find the cat this page created (by its name)
+    async function findTestCat() {
+      const cats = await getCats();
+      for (let i = 0; i < cats.length; i++) {
+        if (cats[i].name.startsWith("Test Cat")) {
+          return cats[i];
+        }
+      }
+      return null;
+    }
+
+    async function testLogIn() {
+      try {
+        await logIn("test1@example.com", "test12345");
+        show("Logged in as test1@example.com");
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testAddCat() {
+      try { show(await addCat("Test Cat", "Tabby", "Just testing", null)); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testEditCat() {
+      try {
+        const cat = await findTestCat();
+        if (!cat) { show("No test cat found. Click 'Add test cat' first."); return; }
+        await updateCat(cat.id, "Test Cat (edited)", "Tabby", "Edited successfully", null);
+        show(await findTestCat());
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testShowCats() {
+      try { show(await getCats()); }
+      catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testDeleteCat() {
+      try {
+        const cat = await findTestCat();
+        if (!cat) { show("No test cat found."); return; }
+        await deleteCat(cat.id);
+        show("Deleted cat number " + cat.id);
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testAddSession() {
+      try {
+        // work out the date one week from today, as YYYY-MM-DD
+        const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        const dateText = nextWeek.toISOString().slice(0, 10);
+        show(await addSession(dateText, "10:00", 8));
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testUpdateBooking() {
+      try {
+        const bookings = await getMyBookings();
+        if (bookings.length === 0) { show("You have no bookings yet."); return; }
+        await updateBooking(bookings[0].id, 3);
+        show(await getMyBookings());
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+
+    async function testUpload() {
+      try {
+        const file = document.getElementById("photoInput").files[0];
+        if (!file) { show("Choose a photo first."); return; }
+        const url = await uploadCatPhoto(file);
+        show("Uploaded! Photo address: " + url);
+      } catch (e) { show("ERROR: " + e.message); }
+    }
+  </script>
+</body>
+</html>
